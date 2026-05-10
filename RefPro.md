@@ -153,7 +153,7 @@ OSEBuildingID | DataYear | BuildingType | PropertyName | Neighborhood | YearBuil
 
 - **Grid(격자) + Search(찾기) + CV(교차 검증)**. 이름 그대로 모든 경우의 수를 격자 모양으로 짜놓고 하나씩 다 대입해 보는 방식.
 
-- **XGBoost/Random Forest**: 트리의 개수(n_estimators), 최대 깊이(max_depth), 학습률(learning_rate) 등을 대입하여 최적의 조합을 발견. 
+- **XGBoost/Random Forest**: 트리의 개수(n_estimators), 최대 깊이(max_depth), 학습률(learning_rate) 등을 대입하여 최적의 조합 발견. 
 
 3. **변수 선택**
 
