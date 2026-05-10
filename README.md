@@ -1,4 +1,4 @@
-# Energy Efficiency Score vs Actual Emissions: Discrepancy Analysis
+# Residual-Based Greenwashing Detection in NYC Building Energy Data
 
 ## Overview
 
