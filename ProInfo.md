@@ -1,6 +1,6 @@
 # 머신러닝 프로젝트 제안서
 
-### Title | 에너지 효율 점수와 실제 배출량의 괴리 분석
+### Title | ENERGY STAR Score와 예측 배출량 잔차 기반 NYC 건물 탄소 배출 괴리 분석
 2026년 4월 14일(Updated), 최은혜 김준서
 
 ### Subject
