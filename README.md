@@ -1,30 +1,30 @@
-# Residual-Based Greenwashing Detection in NYC Building Energy Data
+# Evaluating the Reliability of Energy Ratings and Detecting Hidden Inefficiencies in Buildings
 
 ## Overview
 
-This project investigates the gap between **ENERGY STAR scores** and actual **greenhouse gas (GHG) emissions** in buildings.
-The goal is to validate data reliability and detect anomalies such as potential “greenwashing” using machine learning.
+This project investigates the **reliability of building energy efficiency ratings** using the London EPC dataset.
 
-By predicting expected emissions from physical and operational building features, we identify buildings whose reported efficiency scores do not align with their real environmental impact.
+Rather than treating energy ratings as ground truth, we critically examine whether these ratings are **consistent, trustworthy, and aligned with underlying building characteristics**.
+
+By combining supervised learning with consistency analysis, we use machine learning not only to predict ratings, but to **identify hidden inefficiencies and potential inconsistencies in the evaluation system itself**.
 
 ---
 
 ## Objectives
 
-* Build a high-accuracy model to predict expected GHG emissions
-* Quantify discrepancies between predicted and actual emissions
-* Detect anomalous buildings with inconsistent energy efficiency signals
-* Provide a data-driven validation framework for sustainability metrics
+* Build a predictive model for building energy efficiency ratings (A–G)
+* Evaluate the **consistency of ratings across the same buildings over time**
+* Detect **hidden inefficiencies** where predicted and actual ratings diverge
+* Analyze whether the rating system reflects true building characteristics
 
 ---
 
 ## Dataset
 
-* Source: NYC Open Data
-* Datasets:
+* Source: UK Government Open Data (EPC)
+* Dataset:
 
-  * NYC Building Energy and Water Data Disclosure (LL84)
-  * PLUTO (building physical characteristics)
+  * Domestic Energy Performance Certificates (London subset)
 
 ---
 
@@ -32,68 +32,92 @@ By predicting expected emissions from physical and operational building features
 
 ### Building Identification
 
-* Property Id
-* BBL (Borough, Block, Lot)
+* LMK_KEY (unique certificate ID)
+* UPRN (Unique Property Reference Number)
+
+---
 
 ### Physical Features
 
-* Primary Property Type
-* Gross Floor Area (ft²)
-* Year Built
-* Number of Buildings
+* Property Type
+* Built Form
+* Total Floor Area
+* Construction Age Band
+
+---
 
 ### Energy & Environmental Features
 
-* ENERGY STAR Score
-* Site EUI (kBtu/ft²)
-* Natural Gas Use (therms)
-* Electricity Use (kWh)
-* Total GHG Emissions (Metric Tons CO2e)
+* Current Energy Rating (A–G)
+* Current Energy Efficiency Score
+* CO2 Emissions (Current)
+* Main Heating Description
+* Tenure
 
 ---
 
 ## Methodology
 
-### 1. Data Integration
+### 1. Data Preparation
 
-* Merge LL84 and PLUTO datasets using BBL
-* Perform unit normalization and missing value handling
+* Filter London buildings using local authority codes (E09)
+* Select relevant physical and energy-related features
+* Handle missing values and categorical encoding
+
+---
 
 ### 2. Exploratory Data Analysis
 
-* Analyze distribution of emissions across ENERGY STAR score ranges
-* Identify suspicious patterns among high-score buildings
+* Analyze distribution of energy ratings
+* Examine relationships between building characteristics and efficiency
+* Identify patterns across property types and construction periods
 
-### 3. Emissions Prediction Model
+---
+
+### 3. Energy Rating Prediction Model
 
 * Models:
 
+  * CatBoost
   * XGBoost
-  * LightGBM
 * Inputs:
 
-  * Physical characteristics
-  * Energy usage data
+  * Physical and energy-related features
 * Output:
 
-  * Expected GHG emissions
+  * Predicted Energy Rating (A–G)
 
-### 4. Residual-Based Anomaly Detection
+---
 
-* Compute:
+### 4. Consistency Analysis
 
-  * Residual = Actual Emissions − Predicted Emissions
-* Apply statistical methods (e.g., Z-score) to identify outliers
+* Group records by UPRN (same building)
+* Measure rating variability across time
 
-### 5. Dissonance Index
+```id="zv3u0y"
+rating_variation = df.groupby("UPRN")["CURRENT_ENERGY_RATING"].nunique()
+```
 
-* Combine:
+* Identify buildings with inconsistent rating history
 
-  * ENERGY STAR Score
-  * Emission residuals
-* Identify buildings with:
+---
 
-  * High efficiency score but unusually high emissions
+### 5. Hidden Inefficiency Detection
+
+* Compare:
+
+  * Model-predicted rating vs actual rating
+* Identify:
+
+  * Overestimated efficiency (actual > predicted)
+  * Underestimated efficiency (actual < predicted)
+
+---
+
+### 6. Residual-Based Analysis
+
+* Treat misclassification patterns as signals of inconsistency
+* Analyze systematic deviations in predictions
 
 ---
 
@@ -107,10 +131,10 @@ By predicting expected emissions from physical and operational building features
 ├── notebooks/
 ├── src/
 │   ├── preprocessing.py
-│   ├── merge_datasets.py
 │   ├── eda.py
 │   ├── train_model.py
-│   ├── anomaly_detection.py
+│   ├── consistency_analysis.py
+│   ├── inefficiency_detection.py
 │   └── explainability.py
 ├── results/
 └── README.md
@@ -120,47 +144,49 @@ By predicting expected emissions from physical and operational building features
 
 ## Training Pipeline
 
-1. Data collection and integration
-2. Data cleaning and feature engineering
-3. Model training for emissions prediction
-4. Residual calculation and anomaly detection
-5. Interpretation and reporting
+1. Data collection and filtering (London subset)
+2. Data cleaning and feature selection
+3. Model training for energy rating prediction
+4. Consistency analysis across buildings
+5. Detection of hidden inefficiencies
+6. Interpretation and reporting
 
 ---
 
 ## Expected Results
 
-* Identification of buildings with inconsistent efficiency metrics
-* Detection of potential greenwashing cases
-* Improved understanding of factors driving emissions
+* Identification of buildings with inconsistent rating histories
+* Detection of hidden inefficiencies in energy evaluation
+* Insights into discrepancies between predicted and assigned ratings
 
 ---
 
 ## Key Contributions
 
-* Data-driven validation of energy efficiency scores
-* Residual-based anomaly detection framework
-* Integration of physical and operational building data
+* Reframing supervised learning as a **tool for data validation**
+* Consistency-based analysis of real-world evaluation systems
+* Detection of structural inconsistencies in energy rating assignments
 
 ---
 
 ## Analysis and Interpretability
 
-* SHAP analysis for feature importance
-* Borough-specific insights into energy usage patterns
-* Identification of key drivers of emission discrepancies
+* Feature importance analysis (e.g., SHAP)
+* Investigation of factors influencing rating predictions
+* Case studies of inconsistent or anomalous buildings
 
 ---
 
 ## Future Work
 
-* Real-time monitoring system for building emissions
-* Extension to other cities and regulatory environments
-* Integration with policy enforcement systems
+* Incorporation of temporal modeling for rating evolution
+* Extension to non-domestic buildings
+* Integration with policy and regulatory evaluation frameworks
 
 ---
 
 ## Conclusion
 
-This project goes beyond simple prediction by uncovering inconsistencies between reported efficiency metrics and actual emissions.
-It provides a practical framework for detecting unreliable data and supporting evidence-based environmental policy decisions.
+This project moves beyond traditional prediction tasks by questioning the reliability of energy efficiency ratings themselves.
+
+By using machine learning as a validation tool, we uncover inconsistencies and hidden inefficiencies, offering a more critical and data-driven perspective on building energy evaluation systems.
