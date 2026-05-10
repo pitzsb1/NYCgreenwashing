@@ -1,272 +1,145 @@
 # 머신러닝 프로젝트 제안서
 
-### Title | ENERGY STAR Score와 예측 배출량 잔차 기반 NYC 건물 탄소 배출 괴리 분석
+## Title | 에너지 효율 등급 신뢰성 검증 및 숨겨진 비효율 탐지 (London EPC 기반)
+
 2026년 4월 14일(Updated), 최은혜 김준서
 
-### Subject
+## Subject
 
-에너지 효율 점수(ENERGY STAR Score)와 실제 탄소 배출량 간의 괴리 분석을 통한 데이터 신뢰도 검증 및 이상 탐지
+건물 에너지 효율 등급(Energy Performance Certificate)이 실제 건물 특성과 일관되게 평가되고 있는지 분석하고, 머신러닝을 활용하여 평가 시스템의 신뢰성과 잠재적 불일치(숨겨진 비효율)를 탐지
 
-### DataSet | NYC Building Energy and Water Data Disclosure (LL84) & PLUTO (건물 물리적 특성)
+## DataSet | UK EPC (Energy Performance Certificate, London Subset)
 
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Property Id</th>
-      <th>NYC Borough, Block and Lot (BBL)</th>
-      <th>Largest Property Use Type - Gross Floor Area (ft²)</th>
-      <th>Year Built</th>
-      <th>ENERGY STAR Score</th>
-      <th>Site EUI (kBtu/ft²)</th>
-      <th>Natural Gas Use (therms)</th>
-      <th>Electricity Use - Grid Purchase (kWh)</th>
-      <th>Total GHG Emissions (Metric Tons CO2e)</th>
-      <th>Primary Property Type - Self Selected_Ambulatory Surgical Center</th>
-      <th>...</th>
-      <th>Primary Property Type - Self Selected_Vocational School</th>
-      <th>Primary Property Type - Self Selected_Wastewater Treatment Plant</th>
-      <th>Primary Property Type - Self Selected_Wholesale Club/Supercenter</th>
-      <th>Primary Property Type - Self Selected_Worship Facility</th>
-      <th>Primary Property Type - Self Selected_Zoo</th>
-      <th>Borough_BROOKLYN</th>
-      <th>Borough_MANHATTAN</th>
-      <th>Borough_QUEENS</th>
-      <th>Borough_STATEN IS</th>
-      <th>Borough_Unknown</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>21205224</td>
-      <td>4006520042</td>
-      <td>25000</td>
-      <td>2010</td>
-      <td>71</td>
-      <td>66.7</td>
-      <td>10625.27867</td>
-      <td>176982.1</td>
-      <td>107.5</td>
-      <td>False</td>
-      <td>...</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2665352</td>
-      <td>1-01206-0001</td>
-      <td>260780</td>
-      <td>1970</td>
-      <td>100</td>
-      <td>19.2</td>
-      <td>8273.198321</td>
-      <td>1229531.2</td>
-      <td>398.6</td>
-      <td>False</td>
-      <td>...</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2665400</td>
-      <td>1-01832-0043</td>
-      <td>324378</td>
-      <td>1943</td>
-      <td>84</td>
-      <td>66.9</td>
-      <td>179358.0772</td>
-      <td>1283733.2</td>
-      <td>1323</td>
-      <td>False</td>
-      <td>...</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2665405</td>
-      <td>1-00142-0025</td>
-      <td>1039841</td>
-      <td>1975</td>
-      <td>3</td>
-      <td>113.8</td>
-      <td>992843.9804</td>
-      <td>7797471.9</td>
-      <td>7582.1</td>
-      <td>False</td>
-      <td>...</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>True</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>2669439</td>
-      <td>4-09649-0053</td>
-      <td>85020</td>
-      <td>1953</td>
-      <td>37</td>
-      <td>102.1</td>
-      <td>73241.99945</td>
-      <td>377020.1</td>
-      <td>518.3</td>
-      <td>False</td>
-      <td>...</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>True</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 92 columns</p>
-</div>
+**Resource**: UK Government Open Data
 
-**Resource**: NYC Open Data
+|    | CURRENT_ENERGY_RATING   |   CURRENT_ENERGY_EFFICIENCY |   TOTAL_FLOOR_AREA |   CO2_EMISSIONS_CURRENT | PROPERTY_TYPE   | BUILT_FORM    | CONSTRUCTION_AGE_BAND        | TENURE          |
+|---:|:------------------------|----------------------------:|-------------------:|------------------------:|:----------------|:--------------|:-----------------------------|:----------------|
+|  0 | D                       |                          59 |               93   |                     4.6 | House           | Mid-Terrace   | England and Wales: 1950-1966 | Owner-occupied  |
+|  1 | C                       |                          70 |               66.5 |                     2.9 | Flat            | Semi-Detached | England and Wales: 1967-1975 | rental (social) |
+|  2 | D                       |                          59 |              125   |                     5.8 | House           | Semi-Detached | England and Wales: 1930-1949 | owner-occupied  |
+|  3 | D                       |                          57 |              110   |                     5.4 | House           | Mid-Terrace   | England and Wales: 1900-1929 | owner-occupied  |
+|  4 | C                       |                          73 |               43   |                     1.4 | Flat            | Mid-Terrace   | England and Wales: 1950-1966 | rental (social) |
 
-**Calumn...**
+### Data Description
 
-- **건물 식별**
+* **건물 식별**
 
-Property Id, BBL(Borough, Block, Lot)
+LMK_KEY (인증서 ID), UPRN (건물 고유 ID)
 
-- **물리적 스펙**
+* **물리적 스펙**
 
-Primary Property Type, Gross Floor Area (ft²), Year Built, Number of Buildings
+Property Type, Built Form, Total Floor Area, Construction Age Band
 
-- **에너지/환경**
+* **에너지/환경**
 
-ENERGY STAR Score, Site EUI (kBtu/ft²), Natural Gas/Electricity Use, Total GHG Emissions
+Current Energy Rating (A–G), Current Energy Efficiency, CO2 Emissions (Current), Main Heating Description, Tenure
 
-### 배경 및 필요성 | '무늬만 친환경' 건물 식별의 시급성
+* **건물 특성(독립 변수 x)**: CURRENT_ENERGY_EFFICIENCY, TOTAL_FLOOR_AREA, CO2_EMISSIONS_CURRENT, PROPERTY_TYPE, BUILT_FORM, CONSTRUCTION_AGE_BAND, TENURE, MAINHEAT_DESCRIPTION
 
-- 뉴욕시 탄소 배출의 약 70%가 건물에서 발생하며, 강력한 규제(LL97)가 시행됨에 따라 건물의 에너지 효율 점수 부풀리기나 실제 배출량과의 불일치 사례가 보고됨.
+* **실질적 에너지 효율 등급(종속 변수 y)**: CURRENT_ENERGY_RATING(A, B, C, D, E, F, G)
 
-- 에너지 점수라는 '상대적 지표'에 의존하는 대신, 물리적 스펙 기반의 '절대적 배출 기댓값'을 예측하여 데이터의 진위 여부를 가릴 수 있는 객관적 진단 모델이 필요함.
+## 배경 및 필요성 | “평가 지표는 항상 신뢰할 수 있는가?”
 
-### 프로젝트 목표
+* 건물 에너지 효율 등급(EPC)은 거래, 임대, 정책 결정에 중요한 기준으로 활용됨
+* 그러나 동일 건물에 대해 시간이나 평가 조건에 따라 **서로 다른 등급이 부여되는 사례** 존재
+* 단순히 등급을 활용하는 것을 넘어, **그 등급 자체의 신뢰성을 검증하는 분석**이 필요함
 
-- **고정밀 탄소 배출 예측 모델 구축**
+즉, “좋은 등급”이 반드시 “실제 효율이 좋은 건물”을 의미하는가?
 
-건물의 면적, 용도, 연식, 에너지 사용 구성을 입력값으로 하여 해당 건물의 정상적인 '총 온실가스 배출량(GHG Emissions)'을 예측.
+## 프로젝트 목표
 
-- **그린워싱 탐지 알고리즘 개발**
+* **에너지 효율 등급 예측 모델 구축**
 
-에너지 스타 점수는 높지만, 예측치 대비 실제 배출량이 비정상적으로 높은 '괴리 구간' 건물을 통계적(Z-Score 등)으로 식별하는 시스템 구축.
+건물의 물리적/에너지 특성을 기반으로 정상적인 에너지 등급을 예측하는 모델 구축
 
-### 주요 기능 및 특징
+* **평가 신뢰성 검증**
 
-- **Physical-Operational Hybrid Learning**
+동일 건물(UPRN 기준)에 대해 시간에 따른 등급 변화 분석을 통해 평가 시스템의 일관성 검증
 
-PLUTO 데이터의 물리적 특성(외벽, 층수 등)과 LL84의 운영 데이터를 결합하여 건축학적 관점의 배출량 베이스라인 수립.
+* **숨겨진 비효율 탐지 (Hidden Inefficiency)**
 
-- **Multivariate Anomaly Detection**
+모델 예측 결과와 실제 등급 간의 불일치를 기반으로 과대평가 혹은 과소평가된 건물 식별
 
-단순 배출량 비교를 넘어, 에너지 스타 점수와 배출량 간의 상관계수를 기반으로 한 잔차(Residual) 분석 기법 적용.
+## 주요 기능 및 특징
 
-- **Borough-Specific Weighting**
+* **Model-as-a-Validator 접근 방식**
 
-맨해튼의 고층 상업용 빌딩과 브루클린의 저층 주거용 건물의 에너지 소비 패턴 차이를 반영한 지역별 가중치 적용.
+머신러닝 모델을 단순 예측 도구가 아닌 **데이터 및 평가 시스템 검증 도구로 활용**
 
-### 일정 및 계획
+* **Consistency-Based Analysis**
 
-- **1주차 | 데이터 통합 및 정제**
+동일 건물의 등급 변화 추적을 통해 평가 시스템의 안정성과 신뢰성 분석
 
-LL84와 PLUTO 데이터 매칭(BBL 기준), 단위 변환(kBtu to Metric Tons) 및 결측치 처리.
+* **Residual / Misclassification 기반 탐지**
 
-- **2주차 | 탐색적 데이터 분석(EDA)**
+모델 예측과 실제 등급 간 차이를 활용하여 숨겨진 비효율 및 이상 사례 탐지
 
-에너지 점수 상위권 건물들의 실제 배출량 분포 시각화, 그린워싱 의심 샘플 추출 및 가설 검정.
+## 일정 및 계획
 
-- **3주차 | 머신러닝 모델링**
+* **1주차 | 데이터 정제 및 구조 이해**
 
-XGBoost, LightGBM을 활용한 배출량 예측 모델 구축 및 SHAP 분석을 통한 주요 변수 영향도 파악.
+London EPC 데이터 필터링(E09), 주요 변수 선택 및 결측치 처리
 
-- **4주차 | 이상 탐지 및 보고서 마무리**
+* **2주차 | 탐색적 데이터 분석(EDA)**
 
-예측 잔차 기반 그린워싱 지수(Dissonance Index) 산출 및 시애틀 모델 대비 NYC 특수성(고밀도) 반영 결과 정리.
+건물 유형 및 연식에 따른 등급 분포 분석 동일 건물의 등급 변화 패턴 탐색
 
-### 기대효과
+* **3주차 | 머신러닝 모델링**
 
-- **정책적 가이드라인 제공**
+CatBoost, XGBoost 기반 등급 예측 모델 구축 SHAP 분석을 통한 주요 변수 영향도 파악
 
-단순 고효율 점수 획득보다 실질적인 탄소 감축 활동(에너지 믹스 개선 등)이 필요한 건물을 타겟팅하여 컨설팅 우선순위 도출.
+* **4주차 | 신뢰성 분석 및 보고서 작성**
 
-- **지속 가능한 도시 관리**
+UPRN 기준 일관성 분석 및 hidden inefficiency 사례 도출
 
-'그린워싱'을 방지함으로써 뉴욕시의 2050 탄소 중립 로드맵이 실질적인 수치에 기반하여 실행될 수 있도록 지원.
+평가 시스템의 구조적 문제 해석
 
-### 결론
+## 기대효과
 
-본 프로젝트는 에너지 효율 점수라는 지표 뒤에 숨겨진 실제 탄소 배출의 실태를 머신러닝으로 파헤치는 데 목적이 있음. 이는 단순히 배출량을 맞추는 '예측'의 단계를 넘어, 데이터 간의 모순을 찾아내는 '검증'의 도구로서 기능을 수행함. 이를 통해 뉴욕시 건물들의 진정한 친환경 성능을 판별하고, 실질적인 탄소 저감을 이끌어내는 데이터 기반의 정책 의사결정 모델을 제시하고자 함.
+* **평가 시스템 신뢰성 검증**
 
-### 기존 프로젝트의 문제점 개선
+공공 에너지 평가 데이터의 일관성과 신뢰성을 데이터 기반으로 검증
 
-- **지표 간 독립성 결여 해결**
+* **숨겨진 비효율 건물 식별**
 
-기존 프로젝트는 상관관계가 높은 변수들을 단순히 예측에 활용하지만, 본 프로젝트는 'ENERGY STAR Score'와 '실제 배출량' 사이의 불일치에 집중ㅇ함. 지표가 좋음에도 배출량이 높은 '모순'을 해결하지 못하는 기존 분석의 한계를 개선함.
+표면적으로는 효율적이나 실제 특성과 불일치하는 건물 탐지
 
-- **물리 데이터 결합의 부재 보완**
+* **데이터 기반 정책 개선 기여**
 
-시애틀 프로젝트가 제공된 운영 데이터에 의존했다면, 본 프로젝트는 NYC PLUTO(필지 수준의 물리적 특성) 데이터를 결합. 건물의 구조적 특성(외벽 재질, 용적률 등)을 반영하여 "왜 이 건물은 효율이 낮은가?"에 대한 근거를 더 구체적으로 제시함.
+에너지 평가 기준 및 정책 설계에 대한 개선 방향 제시
 
+## 결론
 
-### 기존 프로젝트의 성능 개선 (기술적 차이)
+본 프로젝트는 단순한 예측 모델을 넘어 에너지 효율 등급이라는 지표 자체를 분석 대상으로 삼음. 머신러닝을 활용하여 평가 결과와 실제 건물 특성 간의 불일치를 탐지함으로써, 데이터의 신뢰성과 평가 시스템의 구조적 한계를 드러내는 데 목적을 두고 있음.
 
-- **앙상블 기반의 비선형 관계 학습**
+## 기존 프로젝트의 문제점 개선
 
-시애틀 프로젝트에서 사용된 기법을 고도화하여, Year Built나 Gross Floor Area 등 에너지 소비와 비선형적 관계를 가진 변수들을 처리하기 위해 XGBoost 및 LightGBM의 하이퍼파라미터 최적화 수행.
+* **단순 예측 중심 접근의 한계 극복**
 
-- **이상치 처리 프로세스 정립**
+기존 프로젝트가 단순한 예측 정확도에 집중했다면, 본 프로젝트는 예측 결과를 활용하여 **데이터 및 평가 시스템 자체를 검증**
 
-단순히 이상치를 제거하는 것이 아니라, 이를 '그린워싱 후보군'으로 레이블링하여 별도의 분류(Classification) 모델로 확장 가능한 파이프라인을 구축.
+* **지표 중심 분석의 한계 보완**
 
-### 실제 환경 개선 및 반영 제안
+단일 지표(에너지 점수)에 의존하지 않고, 다양한 건물 특성을 반영한 모델 기반 비교 분석 수행
 
-- **데이터 무결성 검증 시스템**
+## 기존 프로젝트의 성능 개선 (기술적 차이)
 
-에너지 점수를 자체 보고하는 과정에서 발생할 수 있는 오류나 의도적 수치 조작을 머신러닝 모델이 상시 모니터링하여, 공공 데이터의 투명성을 획기적으로 높일 수 있습니다.
+* **분류 기반 비선형 모델 적용**
 
-- **리모델링 우선순위 최적화**
+에너지 등급(A–G) 예측을 위해 CatBoost 및 XGBoost 활용
 
-예산이 한정된 상황에서, '그린워싱 지수'가 높거나 효율 개선 잠재력이 큰 노후 건물을 데이터 기반으로 선정하여 행정 자원의 최적 배분을 제안합니다.
+범주형 변수 처리 및 비선형 관계 학습 강화
+
+* **오차 기반 해석 확장**
+
+단순 오차를 제거하는 것이 아니라, 이를 분석 대상(비효율/불일치)으로 활용하는 구조로 확장
+
+## 실제 환경 개선 및 반영 제안
+
+* **에너지 평가 품질 모니터링 시스템**
+
+평가 결과의 일관성을 지속적으로 분석하여 데이터 품질 및 평가 신뢰성 확보
+
+* **효율 개선 우선순위 도출**
+
+예측 대비 과소평가된 건물 또는 개선 여지가 큰 건물을 식별하여 정책 및 리모델링 우선순위 제안
