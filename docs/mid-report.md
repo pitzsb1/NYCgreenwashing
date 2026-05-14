@@ -313,25 +313,13 @@ Efficiency: 51 → 73
 
 # 4. 추후 일정
 
-## 4.1 추가 anomaly 분석
-
-* Strong anomaly 사례 심층 분석
-
-* UPRN별 시계열 변화 추적
-
-## 4.2 구조적 원인 분석
-
-* Electric heating 편향 가능성 분석
-
-* 입력 정보 불완전성(NO DATA / Not Recorded) 영향 분석
-
-## 4.3 결과 시각화 강화
+## 4.1 결과 시각화 강화
 
 * Borough 단위 anomaly 분포 시각화
 
 * 지도 기반 EPC inconsistency 분석
 
-## 4.4 최종 결과 정리
+## 4.2 최종 결과 정리
 
 * EPC 평가 체계의 구조적 한계 정리
 
